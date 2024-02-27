@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_9f05e174_dbbe_4624_8100_083638d4a313_Input_Payload = {
+  item_date?: String, 
+  event_description?: String, 
+  reason_text?: String, 
+  transport_id?: String, 
+  reason_description?: String, 
+  gps: {
+    gps_lat?: String, 
+    gps_long?: String, 
+    _?: Any
+  }, 
+  event_timestamp?: String, 
+  location_id?: Number, 
+  reason_id?: String, 
+  ship_unit_barcode?: String, 
+  event_type?: String, 
+  comment?: String, 
+  id?: String, 
+  _?: Any
+}
+

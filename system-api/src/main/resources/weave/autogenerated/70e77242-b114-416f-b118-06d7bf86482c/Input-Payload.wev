@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_70e77242_b114_416f_b118_06d7bf86482c_Input_Payload = Array<{  item_code?: String,   item_date?: String,   item_id?: String,   source_system?: String,   gps_longitude?: Number,   reason_text?: String,   reason_description?: String,   shipment_id?: String,   reason_code?: String,   ids_value?: String,   capture_date?: String,   gps_latitude?: Number,   ids_type?: String,   item_description?: String,   _?: Any}>
+

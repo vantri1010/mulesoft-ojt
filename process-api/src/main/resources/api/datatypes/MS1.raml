@@ -1,0 +1,62 @@
+#%RAML 1.0 DataType 
+type: object
+properties:
+  id:
+    type: string
+    example: '0'
+    required: false
+  ship_unit_barcode:
+    type: string
+    example: ship_unit_barcode
+    required: false
+  item_date:
+    type: datetime-only
+    example: '2022-09-10T08:16:01'
+    required: false
+  event_type:
+    type: string
+    example: event_type
+    required: false
+  event_description:
+    type: string
+    example: event_description
+    required: false
+  reason_id:
+    type: string
+    example: reason_id
+    required: false
+  reason_text:
+    type: string
+    example: rs_txt
+    required: false
+  reason_description:
+    type: string
+    example: reason_description
+    required: false
+  transport_id:
+    type: string
+    example: transport_id
+    required: false
+  gps:
+    type: object
+    properties:
+      gps_lat:
+        type: string
+        example: '11'
+        required: false
+      gps_long:
+        type: string
+        example: '22'
+        required: false
+  event_timestamp:
+    type: datetime-only
+    example: '1970-01-01T19:10:25'
+    required: false
+  location_id:
+    type: integer
+    example: 0
+    required: false
+  comment:
+    type: string
+    example: comment
+    required: false

@@ -1,0 +1,70 @@
+#%RAML 1.0 DataType 
+type: object
+properties:
+  item_code:
+    type: string
+    example: code
+    required: false
+  item_date:
+    type: datetime-only
+    example: '2022-09-10T08:16:01'
+    required: false
+  item_id:
+    type: string
+    example: '0'
+    required: false
+  source_system:
+    type: string
+    example: source_systerm
+    required: false
+  shipment_id:
+    type: string
+    example: shmt_id
+    required: false
+  capture_date:
+    type: datetime-only
+    example: '1970-01-01T19:10:25'
+    required: false
+  item_description:
+    type: string
+    example: item_description
+    required: false
+  ids:
+    type: array
+    items:
+      type: object
+      properties:
+        ids_value:
+          type: string
+          example: ids_value
+          required: false
+        ids_type:
+          type: string
+          example: ids_type
+          required: false
+  gps:
+    type: object
+    properties:
+      gps_latitude:
+        type: integer
+        example: 11
+        required: false
+      gps_longitude:
+        type: integer
+        example: 22
+        required: false
+  reason:
+    type: object
+    properties:
+      reason_text:
+        type: string
+        example: rs_txt
+        required: false
+      reason_description:
+        type: string
+        example: reason_description
+        required: false
+      reason_code:
+        type: string
+        example: rs_code
+        required: false

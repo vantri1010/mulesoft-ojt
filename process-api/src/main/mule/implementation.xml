@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="800f4af6-1453-43b3-abbc-6c2322da12b9" >
+		<http:request-connection host="system-api.us-e2.cloudhub.io"/>
+	</http:request-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e14357fe-3d1f-4680-a13b-a747563419a4" >
+		<http:listener-connection host="0.0.0.0" port="8081"/>
+	</http:listener-config>
+	<flow name="implementationFlow" doc:id="9f05e174-dbbe-4624-8100-083638d4a313" >
+		<http:request method="POST" doc:name="Request Insert" doc:id="f0b26faf-74da-4314-9992-180cf134e08d" config-ref="HTTP_Request_configuration" path="/api/items">
+		</http:request>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ad353835-9931-4879-a2ea-5dae2aa2d5fe" >
+				<http:request method="PUT" doc:name="Request Update" doc:id="6bcdaae8-a08f-49aa-85e6-f84f39f4081c" config-ref="HTTP_Request_configuration" path="/api/items/{id}">
+					<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"id" : payload.item_id
+}]]]></http:uri-params>
+				</http:request>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

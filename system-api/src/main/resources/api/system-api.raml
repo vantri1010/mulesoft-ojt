@@ -1,0 +1,58 @@
+#%RAML 1.0
+title: systems API
+
+types:
+  Item: !include /datatypes/ItemType.raml
+  Items: !include /datatypes/ItemsType.raml
+
+/items:
+  get:
+    displayName: Get all items
+    description:  Retrieves all items in the database
+    responses:
+      200:
+        body:
+          application/json:
+            type: Item[]
+      400:
+        body:
+          application/json:
+            example:
+              message: Unable to retrieve items. Try again!
+
+  post:
+    displayName: Add item
+    description: Add item to the database
+    body:
+      application/json:
+        type: Item
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message: Item added (but not really)
+      400:
+        body:
+          application/json:
+            example:
+              message: Unable to add items. Try again!
+
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Item
+    put:
+      body:
+        application/json:
+          type: Item
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Item added
+

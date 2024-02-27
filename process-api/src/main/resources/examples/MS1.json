@@ -1,0 +1,18 @@
+{
+   "id":"0",
+   "ship_unit_barcode":"ship_unit_barcode",
+   "item_date":"2022-09-10T08:16:01",
+   "event_type":"event_type",
+   "event_description":"event_description",
+   "reason_id":"reason_id",
+   "reason_text":"rs_txt",
+   "reason_description":"reason_description",
+   "transport_id":"transport_id",
+   "gps":{
+      "gps_lat":"11",
+      "gps_long":"22"
+   },
+   "event_timestamp":"1970-01-01T19:10:25",
+   "location_id":0,
+   "comment":"comment"
+}

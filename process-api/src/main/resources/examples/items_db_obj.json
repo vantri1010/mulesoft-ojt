@@ -1,0 +1,16 @@
+{
+   "item_code":"code",
+   "item_date":"2022-09-10T08:16:01",
+   "item_id":"0",
+   "source_system":"source_systerm",
+   "gps_longitude":0,
+   "reason_text":"rs_txt",
+   "reason_description":"reason_description",
+   "shipment_id":"shmt_id",
+   "reason_code":"rs_code",
+   "ids_value":"ids_value",
+   "capture_date":"1970-01-01T19:10:25",
+   "gps_latitude":0,
+   "ids_type":"ids_type",
+   "item_description":"item_description"
+}

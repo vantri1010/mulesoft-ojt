@@ -1,0 +1,27 @@
+#%RAML 1.0
+title: process API
+
+types:
+  Item: !include /datatypes/ItemStandard.raml
+  MS1: !include /datatypes/MS1.raml
+
+/items:
+  post:
+    displayName: Add item
+    description: Add item to database using system API
+    body:
+      application/json:
+        type: MS1
+    
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message: Item created (but not really)
+      
+      400:
+        body:
+          application/json:
+            example:
+              message: Unable to add accounts.Try again!!

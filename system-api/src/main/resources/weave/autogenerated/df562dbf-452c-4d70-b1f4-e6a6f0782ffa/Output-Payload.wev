@@ -1,0 +1,20 @@
+%dw 2.0
+
+type auto_df562dbf_452c_4d70_b1f4_e6a6f0782ffa_Output_Payload = {
+  item_code?: String, 
+  item_date?: String, 
+  item_id?: String, 
+  source_system?: String, 
+  gps_longitude?: Number, 
+  reason_text?: String, 
+  reason_description?: String, 
+  shipment_id?: String, 
+  reason_code?: String, 
+  ids_value?: String, 
+  capture_date?: String, 
+  gps_latitude?: Number, 
+  ids_type?: String, 
+  item_description?: String, 
+  _?: Any
+}
+

@@ -1,0 +1,20 @@
+%dw 2.0
+
+type auto_f5f39d55_c2a2_47b8_8ff8_836c6a0d14cf_Input_Payload = {
+  item_code?: String, 
+  item_date?: String, 
+  item_id?: String, 
+  source_system?: String, 
+  gps_longitude?: Number, 
+  reason_text?: String, 
+  reason_description?: String, 
+  shipment_id?: String, 
+  reason_code?: String, 
+  ids_value?: String, 
+  capture_date?: String, 
+  gps_latitude?: Number, 
+  ids_type?: String, 
+  item_description?: String, 
+  _?: Any
+}
+
