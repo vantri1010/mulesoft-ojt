@@ -9,7 +9,7 @@ Using Mulesoft to create and export API following API-led Connectivity Model:
 - Process API will transform message to standard model 
 - System API will direct connect with PostgreSQL Database 
 
-!![Mulesoft Architecture](https://github.com/vantri1010/mulesoft-ojt/assets/31728513/4873badc-850d-4b10-8aaa-2fc867ac2137)
+![Mulesoft Architecture](https://github.com/vantri1010/mulesoft-ojt/assets/31728513/4873badc-850d-4b10-8aaa-2fc867ac2137)
 
 - **Mapping table**:** 
 
