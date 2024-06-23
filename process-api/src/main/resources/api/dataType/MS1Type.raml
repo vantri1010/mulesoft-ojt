@@ -1,0 +1,29 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  id: string
+  ship_unit_barcode: string
+  item_date: string
+  event_type: string
+  event_description: string
+  reason_id: string
+  reason_text: string
+  reason_description: string
+  transport_id: string
+  gps:
+    type: object
+    required: false
+    properties:
+      lat: string
+      long: string
+  event_timestamp: string  
+  location_id: integer
+  comment: string
+  
+  
+  
+        
+    
+    
+  

@@ -1,29 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="800f4af6-1453-43b3-abbc-6c2322da12b9" >
-		<http:request-connection host="system-api.us-e2.cloudhub.io"/>
-	</http:request-config>
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e14357fe-3d1f-4680-a13b-a747563419a4" >
-		<http:listener-connection host="0.0.0.0" port="8081"/>
-	</http:listener-config>
-	<flow name="implementationFlow" doc:id="9f05e174-dbbe-4624-8100-083638d4a313" >
-		<http:request method="POST" doc:name="Request Insert" doc:id="f0b26faf-74da-4314-9992-180cf134e08d" config-ref="HTTP_Request_configuration" path="/api/items">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="getAll" doc:id="824fbf90-81d3-499d-b746-b7e00143c1f8" >
+		<http:request method="GET" doc:name="Request" doc:id="b344bb31-4fb4-4c1a-a18d-037620c6324c" config-ref="HTTP_Request_configuration" path="/api/items"/>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="0e2aefd3-4116-4065-a896-23aa0c7fe34a" />
+		<logger level="INFO" doc:name="Logger" doc:id="c304389c-be1f-48a5-ad6f-bff0332e8991" />
+	</flow>
+	<flow name="getItemByItemId" doc:id="997f9500-a88e-48f7-b87a-5c5de07f937c" >
+		<http:request method="GET" doc:name="Request" doc:id="6b83a81e-8b54-4205-9109-4eb2dcbedc17" config-ref="HTTP_Request_configuration" path="/api/items/{itemId}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"itemId" : attributes.uriParams.itemId
+}]]]></http:uri-params>
 		</http:request>
-		<error-handler >
-			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ad353835-9931-4879-a2ea-5dae2aa2d5fe" >
-				<http:request method="PUT" doc:name="Request Update" doc:id="6bcdaae8-a08f-49aa-85e6-f84f39f4081c" config-ref="HTTP_Request_configuration" path="/api/items/{id}">
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="2a6c4027-c7e2-4adb-9d1b-ced875520490" />
+		<logger level="INFO" doc:name="Logger" doc:id="fab7b3c1-bb79-45ca-afe2-b398127b2d79" />
+	</flow>
+	<flow name="insertItem" doc:id="724433ff-c358-40df-a925-2fa73e4c6e7e" >
+		<ee:transform doc:name="[MS1] to Standard" doc:id="88d639b2-3e11-472f-8f78-3c6209f9a76a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    itemId: payload.id,
+    sourceSystem: "source-system",
+    ids:{
+        Type: "ids-type",
+        value: payload.ship_unit_barcode
+    },
+    itemCode: payload.event_type,
+    itemDate: payload.item_date,
+    itemDescription: payload.event_description,
+    reason:{
+        code: payload.reason_id,
+        text: payload.reason_text,
+        description: payload.reason_description
+    },
+    shipmentId: payload.transport_id,
+    gps:{
+        latitude: payload.gps.lat as Number,
+        longitude: payload.gps.long as Number
+    },
+    captureDate: payload.event_timestamp
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[payload]" doc:name="Standard Variable" doc:id="c8766ae3-7835-4bc5-bf38-26f61ea5f5b5" variableName="data"/>
+		<http:request method="GET" doc:name="Request to Get By ID" doc:id="f7ecf30b-b345-4c56-a8b6-6483f96c48a0" config-ref="HTTP_Request_configuration" path="/api/items/{itemId}">
+			<http:body ><![CDATA[#[vars.data]]]></http:body>
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"itemId" : vars.data.itemId
+}]]]></http:uri-params>
+		</http:request>
+		<set-variable value="#[payload]" doc:name="Found Item" doc:id="279c2be7-a2e7-4146-bf29-c42b2b932f30" variableName="foundItem"/>
+		<choice doc:name="Choice" doc:id="3fd38357-ac92-4975-97dd-db8fd3352a65" >
+			<when expression="#[sizeOf(vars.foundItem.item) &lt; 1]">
+				<http:request method="POST" doc:name="Request to Insert" doc:id="0e896995-b23c-45a1-91e2-161b61e51df1" config-ref="HTTP_Request_configuration" path="/api/items">
+					<http:body><![CDATA[#[vars.data]]]></http:body>
+		</http:request>
+			</when>
+			<otherwise >
+				<http:request method="PUT" doc:name="Request to Update" doc:id="ac9e0c38-da9e-4346-8635-84e75fb13175" path="/api/items/{itemId}" config-ref="HTTP_Request_configuration">
+					<http:body ><![CDATA[#[vars.data]]]></http:body>
 					<http:uri-params ><![CDATA[#[output application/java
 ---
 {
-	"id" : payload.item_id
+	"itemId" : vars.data.itemId
 }]]]></http:uri-params>
 				</http:request>
-			</on-error-continue>
-		</error-handler>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="7218b8c4-c2c3-46e4-aa72-cb4f64d33725" message='#["FOUND ITEM IS : " ++ sizeOf(vars.foundItem.item)]'/>
+	</flow>
+	<flow name="updateItem" doc:id="fd27ca86-bef7-489d-868a-4c1418403fdb" >
+		<ee:transform doc:name="[MS1] to Standard" doc:id="b10124c3-419b-4203-8a23-ebbef256efbe" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    itemId:payload.id,
+    sourceSystem:"Test",
+    ids:{
+        Type:"Test",
+        value:payload.ship_unit_barcode
+    },
+    itemCode:payload.event_type,
+    itemDate:payload.item_date,
+    itemDescription:payload.event_description,
+    reason:{
+        code:payload.reason_id,
+        text:payload.reason_text,
+        description:payload.reason_description
+    },
+    shipmentId:payload.transport_id,
+    gps:{
+        latitude:payload.gps.lat as Number,
+        longitude:payload.gps.long as Number
+    },
+    captureDate:payload.event_timestamp
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="PUT" doc:name="Request" doc:id="326d866b-f429-49a0-a8d9-27775e43b88e" config-ref="HTTP_Request_configuration" path="/api/items/{itemId}" sendCorrelationId="NEVER">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"itemId" : attributes.uriParams.itemId
+}]]]></http:uri-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="ea8e3681-1035-4b02-93c4-c61ac91ee1c2" />
 	</flow>
 </mule>

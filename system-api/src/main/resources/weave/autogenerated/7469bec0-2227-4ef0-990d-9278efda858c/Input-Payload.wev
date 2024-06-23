@@ -1,0 +1,29 @@
+%dw 2.0
+
+type auto_7469bec0_2227_4ef0_990d_9278efda858c_Input_Payload = {
+  itemId: String, 
+  reason?: {
+    code: String, 
+    description: String, 
+    text?: String, 
+    _?: Any
+  }, 
+  "gps?"?: {
+    latitude: Number, 
+    longitude: Number, 
+    _?: Any
+  }, 
+  sourceSystem?: String, 
+  shipmentId: String, 
+  itemCode?: String, 
+  ids: {
+    Type: String, 
+    value: String, 
+    _?: Any
+  }, 
+  itemDate: String, 
+  itemDescription?: String, 
+  captureDate: String, 
+  _?: Any
+}
+

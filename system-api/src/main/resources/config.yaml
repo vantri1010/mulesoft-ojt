@@ -1,0 +1,10 @@
+http:
+  port: "8081"
+  
+db:
+  host: "jdbc:postgresql://localhost"
+  port: "5432"
+  database: "Anie"
+  username: "postgres" 
+  password: "admin"
+  

@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_997f9500_a88e_48f7_b87a_5c5de07f937c_Output_Payload = {
+  item_date: String, 
+  event_description: String, 
+  reason_text: String, 
+  transport_id: String, 
+  reason_description: String, 
+  gps?: {
+    lat: String, 
+    long: String, 
+    _?: Any
+  }, 
+  event_timestamp: String, 
+  location_id: Number, 
+  reason_id: String, 
+  ship_unit_barcode: String, 
+  event_type: String, 
+  comment: String, 
+  id: String, 
+  _?: Any
+}
+

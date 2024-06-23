@@ -1,0 +1,42 @@
+-- Database: Anie
+
+-- DROP DATABASE IF EXISTS "Anie";
+
+	CREATE DATABASE "Anie"
+		WITH
+		OWNER = postgres
+		ENCODING = 'UTF8'
+		LC_COLLATE = 'English_United Kingdom.1252'
+		LC_CTYPE = 'English_United Kingdom.1252'
+		TABLESPACE = pg_default
+		CONNECTION LIMIT = -1
+		IS_TEMPLATE = False;
+		
+		
+		
+	CREATE TABLE "item"
+
+	(
+		item_id varchar(36) NOT NULL  ,
+		source_system varchar(36),
+		ids_type varchar(50),
+		ids_value varchar(50) NOT NULL,
+		item_date timestamp NOT NULL,
+		item_code varchar(5),
+		item_description varchar(100),
+		reason_code varchar(10),
+		reason_text varchar(10),
+		reason_description varchar(100),
+		shipment_id varchar(10),
+		gps_latitude integer,
+		gps_longitude integer,
+		capture_date timestamp NOT NULL,
+		PRIMARY KEY (item_id)
+		
+	)
+
+INSERT INTO public.item(
+	item_id, source_system, ids_type, ids_value, item_date, item_code, item_description, reason_code, reason_text, reason_description, shipment_id, gps_latitude, gps_longitude, capture_date)
+	VALUES ('SE026099991NZ','1' ,'1' ,'15A456789056789','2022-01-16T10:25:36','P','This is a test pickup','ACP600','Item','OK','92fd322c',-36.94,174.87,'2022-01-28T14:30:01');
+
+

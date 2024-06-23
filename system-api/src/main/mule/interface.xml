@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="system-api-config" api="system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <flow name="system-api-main">
-        <http:listener config-ref="HTTP_Listener_config" path="/api/*" allowedMethods="GET, POST, PUT">
+    <apikit:config name="SystemAPI-config" api="SystemAPI.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="SystemAPI-main">
+        <http:listener config-ref="HTTP_Listener_config_system" path="/api/*" doc:name="System Listener">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
@@ -11,7 +11,7 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="system-api-config" />
+        <apikit:router config-ref="SystemAPI-config" doc:name="APIkit Router System"/>
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform>
@@ -93,17 +93,17 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="system-api-console">
-        <http:listener config-ref="HTTP_Listener_config" path="/console/*">
+    <flow name="SystemAPI-console">
+        <http:listener config-ref="HTTP_Listener_config_system" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="system-api-config" />
+        <apikit:console config-ref="SystemAPI-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
                 <ee:transform>
@@ -120,16 +120,16 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="put:\items\(ID):application\json:system-api-config">
-		<flow-ref doc:name="update" doc:id="02e351c6-a8cf-43be-8d2b-f165d4ca41d1" name="update"/>
+    <flow name="put:\items\(itemId):application\json:SystemAPI-config">
+		<flow-ref doc:name="updateItem" doc:id="0f762fd3-94c5-4498-814f-fabbd88a4c63" name="updateItem"/>
     </flow>
-    <flow name="get:\items:system-api-config">
-		<flow-ref doc:name="get-all-items" doc:id="15ec50f0-c6ea-4f4c-bcc3-8f1c8b695089" name="get-all-items"/>
+    <flow name="get:\items:SystemAPI-config">
+		<flow-ref doc:name="getAllItems" doc:id="0748f7f2-8b2d-4785-a9c8-bc98dd8b30cb" name="getAllItems"/>
     </flow>
-    <flow name="get:\items\(ID):system-api-config">
-		<flow-ref doc:name="get-item-by-id" doc:id="e6b57ab0-b354-4d88-81c4-23b449635806" name="get-item-by-id"/>
+    <flow name="get:\items\(itemId):SystemAPI-config">
+		<flow-ref doc:name="getItemByItemId" doc:id="cea59285-4da6-4f01-b69b-cffb69b22fc6" name="getItemByItemId"/>
     </flow>
-    <flow name="post:\items:application\json:system-api-config">
-		<flow-ref doc:name="insert" doc:id="1ff4e268-138f-4d1d-9a69-4caf4a3e125b" name="insert"/>
+    <flow name="post:\items:application\json:SystemAPI-config">
+		<flow-ref doc:name="insertItem" doc:id="f953644c-b2b0-4d5c-94ca-33611fbd4287" name="insertItem"/>
     </flow>
 </mule>

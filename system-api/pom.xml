@@ -3,17 +3,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
-	<artifactId>system-api</artifactId>
+	<artifactId>systemapi</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
-	<name>system-api</name>
+	<name>final-system-api</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<app.runtime>4.4.0-20220824</app.runtime>
+		<app.runtime>4.4.0-20220622</app.runtime>
 		<mule.maven.plugin.version>3.6.3</mule.maven.plugin.version>
 	</properties>
 
@@ -32,24 +32,12 @@
 				<configuration>
 					<sharedLibraries>
 						<sharedLibrary>
-							<groupId>org.postgresql</groupId>
-							<artifactId>postgresql-42.2.18</artifactId>
-						</sharedLibrary>
-						<sharedLibrary>
-							<groupId>postgresql</groupId>
-							<artifactId>postgresql</artifactId>
-						</sharedLibrary>
-						<sharedLibrary>
-							<groupId>org.postgresql</groupId>
-							<artifactId>postgresql-42.5.0</artifactId>
+							<groupId>org.springframework</groupId>
+							<artifactId>spring-jdbc</artifactId>
 						</sharedLibrary>
 						<sharedLibrary>
 							<groupId>org.postgresql</groupId>
 							<artifactId>postgresql</artifactId>
-						</sharedLibrary>
-						<sharedLibrary>
-							<groupId>com.mycompany</groupId>
-							<artifactId>postgresql-42.5.0</artifactId>
 						</sharedLibrary>
 					</sharedLibraries>
 				</configuration>
@@ -71,35 +59,20 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql-42.2.18</artifactId>
-			<version>0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>9.1-901-1.jdbc4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql-42.5.0</artifactId>
-			<version>0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.2.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-apikit-module</artifactId>
 			<version>1.6.1</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>com.mycompany</groupId>
-			<artifactId>postgresql-42.5.0</artifactId>
-			<version>0.1</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>5.3.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.23</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.connectors</groupId>

@@ -1,112 +1,207 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<db:config name="Database_Config" doc:name="Database Config" doc:id="08a1fcb2-473f-4145-a3ef-55dc45a8dae5" >
-		<db:generic-connection url="jdbc:postgresql://db.bit.io:5432/vntri/demo?sslmode=require" driverClassName="org.postgresql.Driver" user="vntri" password="v2_3u4Nx_8JZt5FaS74ZrvLUYFdFmusn" />
-	</db:config>
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="fc83faab-131c-451d-806b-7d9e8968e765" >
-		<http:listener-connection host="0.0.0.0" port="8081" />
-	</http:listener-config>
-	<flow name="get-all-items" doc:id="7f8e83da-9396-4804-9186-b03e2ac129da" >
-		<db:select doc:name="Select" doc:id="60d7876d-ddaa-45ad-b098-e11d848a951d" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from item]]></db:sql>
+	<flow name="getAllItems" doc:id="9146e2d4-aa13-4012-8d1e-b4869340d034" >
+		<db:select doc:name="Select" doc:id="1f58a237-95b3-416c-9261-dd43cbce3b92" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM item]]></db:sql>
 		</db:select>
-		<ee:transform doc:name="Transform Message" doc:id="28ee4313-0d1c-434d-a6bc-f4e65fc75912" >
+		<ee:transform doc:name="[Item] to JSON" doc:id="11d8223f-aa02-4a15-abd8-2bc243396d49" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+item:(payload map (object,index) ->
+{
+    itemId: object.item_id,
+    sourceSystem: object.source_system,
+    ids:{
+        value:object.ids_value,
+        Type:object.ids_type
+    },
+    itemDate:object.item_date,
+    itemCode: object.item_code,
+    itemDescription:object.item_description,
+    reason:{
+        code:object.reason_code,
+        text:object.reason_text,
+        description:object.reason_description
+    },
+    shipmentId:object.shipment_id,
+    gps:{
+        latitude:object.gps_latitude,
+        longitude:object.gps_longitude
+    },
+    captureDate:object.capture_date
+})
+   
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="a57a407a-8463-41ed-8293-1e5c722f08de" />
 	</flow>
-		<flow name="get-item-by-id" doc:id="df562dbf-452c-4d70-b1f4-e6a6f0782ffa" >
-		<db:select doc:name="Select" doc:id="4b1b76be-9f5a-4689-b7e9-69f62a186da8" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from item
-where item_id = :ID]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{'ID': attributes.uriParams.ID}]]]></db:input-parameters>
-		
-</db:select>
-		<ee:transform doc:name="Transform Message" doc:id="222dca96-add4-4331-b4da-4b7368c5ae26" >
+	<flow name="getItemByItemId" doc:id="69e6e8b4-7f04-4389-a5b7-9568ca6ec496" >
+		<db:select doc:name="Select" doc:id="f4ff8ef7-740e-4928-96fa-7748231cfe3a" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM item WHERE item_id=:itemId]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'itemId' : attributes.uriParams.itemId}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="[Item] to JSON" doc:id="05c2447b-894a-4b27-91d5-6ac3700d3660" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+item:(payload map (object,index) ->
+{
+    itemId: object.item_id,
+    sourceSystem: object.source_system,
+    ids:{
+        value:object.ids_value,
+        Type:object.ids_type
+    },
+    itemDate:object.item_date,
+    itemCode: object.item_code,
+    itemDescription:object.item_description,
+    reason:{
+        code:object.reason_code,
+        text:object.reason_text,
+        description:object.reason_description
+    },
+    shipmentId:object.shipment_id,
+    gps:{
+        latitude:object.gps_latitude,
+        longitude:object.gps_longitude
+    },
+    captureDate:object.capture_date
+})
+   
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="37588f7c-9081-429d-964b-5fb59e5ff29b" />
 	</flow>
-	<flow name="update" doc:id="f5f39d55-c2a2-47b8-8ff8-836c6a0d14cf" >
-		<db:update doc:name="Update" doc:id="1ca37a5e-2f50-4e29-9381-c3e38eaf6ad8" config-ref="Database_Config">
-			<db:sql ><![CDATA[	UPDATE public.item
-	SET  source_system=:source_system, ids_type=:ids_type, ids_value=:ids_value, item_date=:item_date, item_code=:item_code, item_description=:item_description, reason_code=:reason_code, reason_text=:reason_text, reason_description=:reason_description, shipment_id=:shipment_id, gps_latitude=:gps_latitude, gps_longitude=:gps_longitude, capture_date=:capture_date
-	WHERE item_id=:item_id;]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{
-	'item_id': payload.item_id,
-	'source_system': payload.source_system,
-	'ids_type': payload.ids_type,
-	'ids_value': payload.ids_value,
-	'item_date': payload.item_date as DateTime as String {format:"yyyy-MM-dd hh:mm:ss"},
-	'item_code': payload.item_code,
-	'item_description': payload.item_description,
-	'reason_code': payload.reason_code,
-	'reason_text': payload.reason_text,
-	'reason_description': payload.reason_description,
-	'shipment_id': payload.shipment_id,
-	'gps_latitude': payload.gps_latitude,
-	'gps_longitude': payload.gps_longitude,
-	'capture_date': payload.capture_date as DateTime as String {format:"yyyy-MM-dd hh:mm:ss"}
+	<flow name="insertItem" doc:id="b52d9d0e-dbde-4f4b-af8b-d0d242a00cf5" >
+		<ee:transform doc:name="[Standard] to DB" doc:id="16ace5e7-5f91-4abf-a8d5-cc76085d8560" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    item_id: payload.itemId,
+    item_code: payload.itemCode,
+    item_date: payload.itemDate as DateTime as String {format:"yyyy-MM-dd hh:mm:ss"},
+    source_system: payload.sourceSystem,
+    gps_longitude: payload.gps.longitude,
+    reason_text: payload.reason.text,
+    reason_description: payload.reason.description,
+    shipment_id: payload.shipmentId,
+    reason_code: payload.reason.code,
+    ids_value: payload.ids.value,
+    capture_date: payload.captureDate as DateTime as String {format:"yyyy-MM-dd hh:mm:ss"},
+    gps_latitude: payload.gps.latitude,
+    ids_type: payload.ids.Type,
+    item_description: payload.itemDescription
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:insert doc:name="Insert" doc:id="3d8b7fcb-361b-47cd-bde4-961af1b04f39" config-ref="Database_Config">
+					<db:sql><![CDATA[INSERT INTO public.item(
+    item_id, source_system, ids_type, ids_value, item_date, item_code, item_description, reason_code, reason_text, reason_description, shipment_id, gps_latitude, gps_longitude, capture_date)
+VALUES (:item_id, :source_system, :ids_type, :ids_value, :item_date, :item_code, :item_description, :reason_code, :reason_text, :reason_description, :shipment_id, :gps_latitude, :gps_longitude, :capture_date)
+	ON CONFLICT (item_id) DO UPDATE 
+  	SET source_system = excluded.source_system, 
+      	ids_type = excluded.ids_type,
+      	ids_value = excluded.ids_value,
+      	item_date = excluded.item_date,
+      	item_code = excluded.item_code,
+      	item_description = excluded.item_description,
+      	reason_code = excluded.reason_code,
+      	reason_text = excluded.reason_text,
+      	reason_description = excluded.reason_description,
+      	shipment_id = excluded.shipment_id,
+      	gps_latitude = excluded.gps_latitude,
+      	gps_longitude = excluded.gps_longitude,
+      	capture_date = excluded.capture_date;]]></db:sql>
+					<db:input-parameters><![CDATA[#[{ "item_id": payload.item_id,
+    "source_system": payload.source_system,
+    "ids_type": payload.ids_type,
+    "ids_value": payload.ids_value,
+    "item_date": payload.item_date,
+    "item_code": payload.item_code,
+    "reason_description": payload.reason_description,
+    "reason_code": payload.reason_code,
+    "reason_text": payload.reason_text,
+    "item_description": payload.item_description,
+    "shipment_id": payload.shipment_id,
+    "gps_latitude": payload.gps_latitude,
+    "gps_longitude": payload.gps_longitude,
+    "capture_date": payload.capture_date
+}]]]></db:input-parameters>
+				</db:insert>
+		<set-payload value="Status: Add Item Success" doc:name="Set Payload" doc:id="1e418a1c-0e3f-4c59-8285-dd2a63027dc7" />
+		<logger level="INFO" doc:name="Logger" doc:id="27c57569-250d-4b1f-ab09-0dcd8decbc05" />
+	</flow>
+	<flow name="updateItem" doc:id="7469bec0-2227-4ef0-990d-9278efda858c" >
+		<ee:transform doc:name="[Standard] to DB" doc:id="58e5b108-908a-4f0d-a099-3eaf1f75d39e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    item_id: payload.itemId,
+    item_code: payload.itemCode,
+    item_date: payload.itemDate as DateTime as String {format:"yyyy-MM-dd hh:mm:ss"},
+    source_system: payload.sourceSystem,
+    gps_longitude: payload.gps.longitude,
+    reason_text: payload.reason.text,
+    reason_description: payload.reason.description,
+    shipment_id: payload.shipmentId,
+    reason_code: payload.reason.code,
+    ids_value: payload.ids.value,
+    capture_date: payload.captureDate as DateTime as String {format:"yyyy-MM-dd hh:mm:ss"},
+    gps_latitude: payload.gps.latitude,
+    ids_type: payload.ids.Type,
+    item_description: payload.itemDescription
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:update doc:name="Update" doc:id="c2f1278c-2039-4528-b30a-37717030056b" config-ref="Database_Config">
+			<db:sql ><![CDATA[UPDATE item
+    SET
+        source_system= :source_system,
+        ids_type= :ids_type,
+        ids_value= :ids_value,
+        item_date=:item_date,
+        item_code= :item_code,
+        item_description= :item_description,
+        reason_code= :reason_code,
+        reason_text= :reason_text,
+        reason_description= :reason_description,
+        shipment_id= :shipment_id,
+        gps_latitude= :gps_latitude,
+        gps_longitude= :gps_longitude,
+        capture_date= :capture_date
+    WHERE item_id= :item_id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{ 
+	"item_id": payload.item_id,
+    "source_system": payload.source_system,
+    "ids_type": payload.ids_type,
+    "ids_value": payload.ids_value,
+    "item_date": payload.item_date,
+    "item_code": payload.item_code,
+    "reason_description": payload.reason_description,
+    "reason_code": payload.reason_code,
+    "reason_text": payload.reason_text,
+    "item_description": payload.item_description,
+    "shipment_id": payload.shipment_id,
+    "gps_latitude": payload.gps_latitude,
+    "gps_longitude": payload.gps_longitude,
+    "capture_date": payload.capture_date
 }]]]></db:input-parameters>
 		</db:update>
-		<ee:transform doc:name="Transform Message" doc:id="997a8099-f325-466b-bad0-62616355f779" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	status: "200",
-	message: "Update success"
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-	</flow>
-	<flow name="insert" doc:id="70e77242-b114-416f-b118-06d7bf86482c" >
-		<db:insert doc:name="Insert" doc:id="438c2a20-a1e2-46a7-b897-73aece972922" config-ref="Database_Config">
-			<db:sql ><![CDATA[INSERT INTO item(
-	item_id, source_system, ids_type, ids_value, item_date, item_code, item_description, reason_code, reason_text, reason_description, shipment_id, gps_latitude, gps_longitude, capture_date)
-	VALUES (:item_id, :source_system, :ids_type, :ids_value, :item_date, :item_code, :item_description, :reason_code, :reason_text, :reason_description, :shipment_id, :gps_latitude, :gps_longitude, :capture_date);]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{
-	'item_id': payload.item_id,
-	'source_system': payload.source_system,
-	'ids_type': payload.ids_type,
-	'ids_value': payload.ids_value,
-	'item_date': payload.item_date as DateTime as String {format:"yyyy-MM-dd hh:mm:ss"},
-	'item_code': payload.item_code,
-	'item_description': payload.item_description,
-	'reason_code': payload.reason_code,
-	'reason_text': payload.reason_text,
-	'reason_description': payload.reason_description,
-	'shipment_id': payload.shipment_id,
-	'gps_latitude': payload.gps_latitude,
-	'gps_longitude': payload.gps_longitude,
-	'capture_date': payload.capture_date as DateTime as String {format:"yyyy-MM-dd hh:mm:ss"}
-}]]]></db:input-parameters>
-		</db:insert>
-		<ee:transform doc:name="Transform Message" doc:id="529c0d3c-1ac5-4d8f-ae76-b7edb2cc9961" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	status: "200",
-	message: "Insert success"
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+		<set-payload value='Status: "Update Success"' doc:name="Set Payload" doc:id="6cfe5be3-96b2-43c0-a643-9731875366cf" />
+		<logger level="INFO" doc:name="Logger" doc:id="d29e2165-518b-4147-910c-b83628555e65" />
 	</flow>
 </mule>
